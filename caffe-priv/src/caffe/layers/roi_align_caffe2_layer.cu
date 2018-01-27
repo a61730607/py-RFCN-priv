@@ -1,3 +1,7 @@
+#if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ >= 600
+#else
+__device__ double atomicAdd( double* b, double a) { return a; }
+#endif
 #include <cfloat>
 #include <algorithm>
 #include <vector>
@@ -142,7 +146,9 @@ void ROIAlignCaffe2Layer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
   CUDA_POST_KERNEL_CHECK;
 }
 template <typename Dtype>
-inline __device__ Dtype gpu_atomic_add(const Dtype val, Dtype* address);
+inline __device__ Dtype gpu_atomic_add(const Dtype val, Dtype* address){
+  return atomicAdd(address, val);
+}
 
 template <>
 inline __device__ float gpu_atomic_add(const float val, float* address) {
@@ -222,8 +228,8 @@ __global__ void ROIAlignBackward(
     const Dtype* bottom_rois) {
   CUDA_KERNEL_LOOP(index, nthreads) {
     // (n, c, h, w) coords in bottom data
-    int w = index % width;
-    int h = (index / width) % height;
+    int pw = index % width;
+    int ph = (index / width) % height;
     int c = (index / width / height) % channels;
     int n = index / width / height / channels;
 
