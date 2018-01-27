@@ -222,8 +222,8 @@ __global__ void ROIAlignBackward(
     const Dtype* bottom_rois) {
   CUDA_KERNEL_LOOP(index, nthreads) {
     // (n, c, h, w) coords in bottom data
-    int w = index % width;
-    int h = (index / width) % height;
+    int pw = index % width;
+    int ph = (index / width) % height;
     int c = (index / width / height) % channels;
     int n = index / width / height / channels;
 
