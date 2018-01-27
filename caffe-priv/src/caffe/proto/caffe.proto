@@ -426,6 +426,7 @@ message LayerParameter {
   optional SmoothL1LossParameter smooth_l1_loss_param = 150;  
   optional BoxAnnotatorOHEMParameter box_annotator_ohem_param = 151;
   optional ROIAlignParameter roi_align_param = 20005;
+  optional ROIAlignCaffe2Parameter roi_align_caffe2_param = 20009;
   optional FrcnnAnchorTargetParameter frcnn_anchor_target_param = 40000;
   optional FrcnnProposalParameter frcnn_proposal_param = 40001;
   optional FrcnnProposalTargetParameter frcnn_proposal_target_param = 40002;
@@ -981,6 +982,17 @@ message ROIAlignParameter {
   // Multiplicative spatial scale factor to translate ROI coords from their
   // input scale to the scale used when pooling
   optional float spatial_scale = 3 [default = 1];
+}
+
+message ROIAlignCaffe2Parameter {
+  // Pad, kernel size, and stride are all given as a single value for equal
+  // dimensions in height and width or as Y, X pairs.
+  optional uint32 pooled_h = 1 [default = 0]; // The pooled output height
+  optional uint32 pooled_w = 2 [default = 0]; // The pooled output width
+  // Multiplicative spatial scale factor to translate ROI coords from their
+  // input scale to the scale used when pooling
+  optional float spatial_scale = 3 [default = 1];
+  optional uint32 sampling_ratio = 4 [default = 2];
 }
 
 // Message that stores parameters used by ROIPoolingLayer
